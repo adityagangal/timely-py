@@ -2,6 +2,7 @@ from ..base_model import BaseModel
 from pydantic import Field
 from beanie import Indexed, Link
 from typing import List, Optional, TYPE_CHECKING
+from ..reference_models import SubjectReferenceIdName, FacultyReferenceIdName
 
 if TYPE_CHECKING:
     from ..batch.batch import Batch
@@ -14,7 +15,8 @@ class Event(BaseModel):
     online_link: Optional[str] = Field(None, description="Online Link")
     description: Optional[str] = Field(None, description="Describe the event")
     batches: Optional[List[Link["Batch"]]] = Field(default=[], description="Batches associated with the event")
-    faculty: Optional[List[Link["User"]]] = Field(default=[], description="Faculty associated with the event")
+    faculty: Optional[List[FacultyReferenceIdName]] = Field(default=[], description="Faculty associated with the event")
+    subjects: Optional[List[SubjectReferenceIdName]] = Field(default=[], description="Subjects associated with the event")
 
     class Settings:
         name = "Events"

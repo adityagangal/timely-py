@@ -2,7 +2,7 @@ from ..utils import prepare_objects
 
 user_keys = ["name", "email", "password", "in_batches"]
 student_ukeys = ["uid", "semester", "division", "passout"]
-faculty_ukeys = ["faculty_code", "default_room"]
+faculty_ukeys = ["code", "default_room"]
 
 student_keys = user_keys + student_ukeys
 faculty_keys = user_keys + faculty_ukeys

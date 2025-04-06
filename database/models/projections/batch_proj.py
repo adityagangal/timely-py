@@ -3,4 +3,4 @@ from beanie import PydanticObjectId
 
 class BatchIdCodeProjection(BaseModel):
     id: PydanticObjectId = Field(..., alias="_id")
-    batch_code: str
+    code: str

@@ -1,6 +1,6 @@
 from ..utils import prepare_objects
 
-batch_keys = ["batch_name", "batch_code", "description",
+batch_keys = ["name", "code", "description",
             "event_subscribers", "admins", "events", "live_events"]
 
 batches = [

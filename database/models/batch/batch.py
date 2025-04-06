@@ -13,8 +13,8 @@ if TYPE_CHECKING:
 
 
 class Batch(BaseModel):
-    batch_name: str = Field(None, description="Name of the batch")
-    batch_code: Annotated[str, Indexed(unique=True)]
+    name: str = Field(None, description="Name of the batch")
+    code: Annotated[str, Indexed(unique=True)]
     description: str = Field(None, description="Description of the batch")
     event_subscribers: List[Link["User"]] = Field(default=[], description="Users who get event notifications")
     admins: List[Link["User"]] = Field(default=[], description="Users with admin privileges")

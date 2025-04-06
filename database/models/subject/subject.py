@@ -8,8 +8,8 @@ if TYPE_CHECKING:
     from ..event.event import Event
 
 class Subject(BaseModel):
-    subject_name: str = Field(..., description="Start time in hh:mm")
-    subject_code: str = Field(..., description="End time in hh:mm")
+    name: str = Field(..., description="Subject name")
+    code: str = Field(..., description="Subject code")
     batches: Optional[List[Link["Batch"]]] = Field(default=[], description="Batches associated with the subject")
     events: Optional[List[Link["Event"]]] = Field(default=[], description="Events associated with the subject")
 

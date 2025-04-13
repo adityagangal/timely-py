@@ -3,7 +3,7 @@ from typing import Optional
 from bson import ObjectId
 
 class FacultyReferenceIdName(PydanticBaseModel):
-    id: ObjectId = Field(..., alias="_id", description="Faculty ID")
+    id: ObjectId = Field(..., alias="_id", description="User document _id")
     name: str = Field(..., description="Faculty name")
     code: Optional[str] = Field(default="", description="Faculty Code")
 

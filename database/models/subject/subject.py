@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 class Subject(BaseModel):
     name: str = Field(..., description="Subject name")
     code: str = Field(..., description="Subject code")
-    batches: Optional[List[Link["Batch"]]] = Field(default=[], description="Batches associated with the subject")
+    # batches: Optional[List[Link["Batch"]]] = Field(default=[], description="Batches associated with the subject")
     events: Optional[List[Link["Event"]]] = Field(default=[], description="Events associated with the subject")
 
     class Settings:

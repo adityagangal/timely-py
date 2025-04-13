@@ -2,7 +2,7 @@ from pydantic import BaseModel as PydanticBaseModel, Field
 from typing import Optional
 from bson import ObjectId
 
-class BatchReferenceIdName(PydanticBaseModel):
+class BatchReferenceIdNameCode(PydanticBaseModel):
     id: ObjectId = Field(..., alias="_id", description="Batch ID")
     name: Optional[str] = Field(..., description="Batch name")
     code: str = Field(default="", description="Batch code")

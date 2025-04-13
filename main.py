@@ -13,6 +13,8 @@ from database.migration_scripts import migrate_add_subjects_field, migrate_user_
 async def main():
     await connect_db()
     # await find_all_batches(BatchIdCodeProjection, write_to_file=True)
+    # print(*get_student_objects(), sep="\n")
+    # print(*get_faculty_objects(), sep="\n")
     # print(get_batch_objects())"migrate_user_fields",
     # await create_batches(get_batch_objects())
     # await migrate_batch_fields()
@@ -21,7 +23,7 @@ async def main():
     # await find_all_users(UserIdNameProjection, write_to_file=True)
     # await create_batches(get_batch_objects())
     # await find_all_batches(BatchIdCodeProjection, write_to_file=True)
-    # await join_user_batch(user_batch_mapping)
+    await join_user_batch(user_batch_mapping)
     # await create_recurring_events(get_recurring_event_objects())
     # print(get_recurring_event_objects())
     # await migrate_add_subjects_field()

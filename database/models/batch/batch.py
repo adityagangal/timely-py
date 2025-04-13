@@ -2,8 +2,8 @@ from __future__ import annotations
 from ..base_model import BaseModel
 from beanie import Indexed, Link
 from pydantic import Field
-from typing import List, TYPE_CHECKING
-from typing import Annotated
+from typing import List, TYPE_CHECKING, Optional, Annotated
+from ..reference_models import EventReferenceEmbedded, UserReferenceIdNameEmail
 
 
 if TYPE_CHECKING:
@@ -15,11 +15,11 @@ if TYPE_CHECKING:
 class Batch(BaseModel):
     name: str = Field(None, description="Name of the batch")
     code: Annotated[str, Indexed(unique=True)]
-    description: str = Field(None, description="Description of the batch")
-    event_subscribers: List[Link["User"]] = Field(default=[], description="Users who get event notifications")
-    admins: List[Link["User"]] = Field(default=[], description="Users with admin privileges")
-    events: List[Link["Event"]] = Field(default=[], description="Related event IDs")
-    live_events: List[Link[LiveEvent]] = Field(default=[], description="Related live event IDs")
+    description: Optional[str] = Field(None, description="Description of the batch")
+    event_subscribers: Optional[List[UserReferenceIdNameEmail]] = Field(default=[], description="Users who get event notifications")
+    admins: Optional[List[UserReferenceIdNameEmail]] = Field(default=[], description="Users with admin privileges")
+    events: Optional[List[EventReferenceEmbedded]] = Field(default=[], description="Related event extended references")
+    live_events: List[Link[LiveEvent]] = Field(default=[], description="Related live event IDs") #TODO - Change this to some embedded reference later
 
     class Settings:
         name = "Batches"

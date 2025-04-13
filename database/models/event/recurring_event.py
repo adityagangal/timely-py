@@ -12,5 +12,5 @@ from pydantic import Field
 
 class RecurringEvent(Event):
     day_of_week: int = Field(..., description="Day of Week (1, 7)<==>(Sunday, Saturday)")
-    class Settings:
-        name = "Recurring Events"
+    # class Settings:
+    #     name = "Recurring Events"

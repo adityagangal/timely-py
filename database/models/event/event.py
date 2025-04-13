@@ -2,7 +2,7 @@ from ..base_model import BaseModel
 from pydantic import Field
 from beanie import Indexed, Link
 from typing import List, Optional, TYPE_CHECKING
-from ..reference_models import SubjectReferenceIdName, FacultyReferenceIdName
+from ..reference_models import SubjectReferenceIdName, FacultyReferenceIdNameCode, BatchReferenceIdName, RoomReferenceIdCode
 
 if TYPE_CHECKING:
     from ..batch.batch import Batch
@@ -11,13 +11,12 @@ if TYPE_CHECKING:
 class Event(BaseModel):
     start_time: str = Field(..., description="Start time in hh:mm")
     end_time: str = Field(..., description="End time in hh:mm")
-    location: str = Field(..., description="Location")
-    online_link: Optional[str] = Field(None, description="Online Link")
+    online_links: Optional[List[str]] = Field(default=[], description="Online Links")
     description: Optional[str] = Field(None, description="Describe the event")
-    batches: Optional[List[Link["Batch"]]] = Field(default=[], description="Batches associated with the event")
-    faculty: Optional[List[FacultyReferenceIdName]] = Field(default=[], description="Faculty associated with the event")
+    batches: Optional[List[BatchReferenceIdName]] = Field(default=[], description="Batches associated with the event")
+    faculty: Optional[List[FacultyReferenceIdNameCode]] = Field(default=[], description="Faculty associated with the event")
     subjects: Optional[List[SubjectReferenceIdName]] = Field(default=[], description="Subjects associated with the event")
-
+    rooms: Optional[List[RoomReferenceIdCode]] = Field(default=[], description="Room Data")
     class Settings:
         name = "Events"
 

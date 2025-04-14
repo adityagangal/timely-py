@@ -3,7 +3,7 @@ from database.dummy import get_student_objects, get_batch_objects, get_faculty_o
 from database.services import (
     create_students, create_batches, find_all_users,
     find_all_batches, join_user_batch_subscribers, create_faculty, create_faculties,
-    create_recurring_events)
+    create_recurring_events, find_all_events, find_all_recurring_events)
 
 from database.config import connect_db, disconnect_db
 from database.models.projections import UserIdNameProjection, BatchIdCodeProjection
@@ -28,7 +28,8 @@ async def main():
     # print(get_recurring_event_objects())
     # await migrate_add_subjects_field()
     # await migrate_user_fields()
-    # await create_recurring_events(get_recurring_event_objects())
+    await create_recurring_events(get_recurring_event_objects())
+    # await find_all_recurring_events(write_to_file=True)
     await disconnect_db()
 
 

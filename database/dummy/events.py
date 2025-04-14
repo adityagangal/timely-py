@@ -3,21 +3,23 @@ from bson import ObjectId
 
 event_keys = [
     "start_time", 
-    "end_time", 
-    "location",
-    "online_link",
+    "end_time",
+    "online_links",
     "description",
     "batches",
+    "faculties",
     "subjects",
+    "rooms",
+
 ]
 
 recurring_events_ukeys = ["day_of_week"]
 recurring_events_keys = event_keys + recurring_events_ukeys
 
 recurring_events = [
-    ["13:30", "15:30", "409", None, "BDA Class", [ObjectId("67f2847473c65214fecfb4e1")], [], 3],
-    ["13:30", "15:30", "407", None, "NLP Class", [ObjectId("67f2847473c65214fecfb4e0")], [], 3],
-    ["15:30", "17:30", "406-A", None, "CA Lab", [ObjectId("67f2847473c65214fecfb4e2")], [], 3],
+    ["13:30", "15:30", [], "BDA Class", [], [], [], [], 3],
+    ["13:30", "15:30", [], "NLP Class", [], [], [], [], 3],
+    ["15:30", "17:30", [], "CA Lab", [], [], [], [], 3],
 ]
 
 def get_recurring_event_objects():

@@ -1,6 +1,6 @@
 from ..base_model import BaseModel
 from pydantic import Field
-from beanie import Indexed, Link
+from beanie import Indexed, Link, UnionDoc
 from typing import List, Optional, TYPE_CHECKING, Annotated
 from ..reference_models import SubjectReferenceIdName, FacultyReferenceIdNameCode, BatchReferenceIdNameCode, RoomReferenceIdCode
 
@@ -9,7 +9,6 @@ if TYPE_CHECKING:
     from ..user.base_user import User
 
 class Event(BaseModel):
-    type: str
     start_time: str = Field(..., description="Start time in hh:mm")
     end_time: str = Field(..., description="End time in hh:mm")
     online_links: Optional[List[str]] = Field(default=[], description="Online Links")
@@ -20,8 +19,7 @@ class Event(BaseModel):
     rooms: Optional[List[RoomReferenceIdCode]] = Field(default=[], description="Room Data") 
     class Settings:
         name = "Events"
-        model_type = "type"  # tell Beanie which field is the discriminator
-        union_doc = True     # enable polymorphism
+        is_root = True
 
 from ..batch.batch import Batch
 from ..user.base_user import User

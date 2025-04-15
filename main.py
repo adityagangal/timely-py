@@ -9,6 +9,10 @@ from database.config import connect_db, disconnect_db
 from database.models.projections import UserIdNameProjection, BatchIdCodeProjection
 from database.dummy import user_batch_mapping, get_recurring_event_objects
 from database.migration_scripts import migrate_add_subjects_field, migrate_user_fields, migrate_batch_fields
+from database.models import Event, RecurringEvent
+import database.models as models_module
+import inspect
+from beanie import Document
 
 async def main():
     await connect_db()
@@ -28,8 +32,10 @@ async def main():
     # print(get_recurring_event_objects())
     # await migrate_add_subjects_field()
     # await migrate_user_fields()
-    await create_recurring_events(get_recurring_event_objects())
-    # await find_all_recurring_events(write_to_file=True)
+    # await create_recurring_events(get_recurring_event_objects())
+    await find_all_events(write_to_file=True)
+    # val = await ABC.find({}).to_list()
+    # print(val)
     await disconnect_db()
 
 

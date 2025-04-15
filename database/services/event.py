@@ -1,4 +1,4 @@
-from database.utils import create_one, create_many, find_all, P
+from database.utils import create_one, create_many, find_all, P, find_all_polymorphic
 from database.models import RecurringEvent, Event
 from typing import Optional, List, Dict, Type, Union
 from beanie import Document

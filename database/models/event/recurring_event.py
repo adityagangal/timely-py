@@ -1,4 +1,5 @@
 from .event import Event
+from ..base_model import BaseModel
 from pydantic import Field
 from typing import Literal
 
@@ -12,7 +13,5 @@ from typing import Literal
 ]"""
 
 class RecurringEvent(Event):
-    type: Literal["RecurringEvent"] = "RecurringEvent"
     day_of_week: int = Field(..., description="Day of Week (1, 7)<==>(Sunday, Saturday)")
-    # class Settings:
-    #     name = "Recurring Events"
+    

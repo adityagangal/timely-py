@@ -3,8 +3,9 @@ from dotenv import load_dotenv
 from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo.server_api import ServerApi
 import asyncio
-from beanie import init_beanie
-from database.models import User, Student, Faculty, Batch, Event, LiveEvent
+from beanie import init_beanie, Document
+import database.models as models_module
+import inspect
 
 # Load environment variables
 load_dotenv()
@@ -48,9 +49,13 @@ async def connect_db():
     try:
         await client.admin.command("ping")
         print("MongoDB connected successfully!")
+        document_models = [
+            member for _, member in inspect.getmembers(models_module)
+            if inspect.isclass(member) and issubclass(member, Document) and member is not Document
+        ]
         await init_beanie(
             database=client[DB_NAME],
-            document_models=[User, Student, Faculty, Batch, Event, LiveEvent]  # List all your models here
+            document_models=document_models  # List all your models here
         )
     except Exception as error:
         print(f"MongoDB connection failed: {error}")

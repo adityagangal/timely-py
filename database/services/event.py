@@ -3,7 +3,7 @@ from database.models import RecurringEvent, Event
 from typing import Optional, List, Dict, Type, Union
 from beanie import Document
 from bson import ObjectId
-from ..models.reference_models import EventReferenceEmbedded as EventProjection
+from ..models.reference_models import RecurringEventReferenceEmbedded as EventProjection
 
 
 async def create_recurring_event(recurring_event_data: dict) -> Optional[Document]:
@@ -13,7 +13,7 @@ async def create_recurring_events(recurring_events_data: list[dict]) -> Optional
     return await create_many(RecurringEvent, recurring_events_data)
 
 async def fetch_event_map(event_ids: List[ObjectId]) -> Dict[ObjectId, EventProjection]:
-    cursor = Event.find({"_id": {"$in": event_ids}}, projection_model=EventProjection)
+    cursor = Event.find({"_id": {"$in": event_ids}}, projection_model=EventProjection, with_children=True)
     events = [event async for event in cursor]
     return {event.id: event for event in events}
 

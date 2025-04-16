@@ -8,7 +8,7 @@ from ..models import Batch, Event
 import asyncio
 
 make_batch_ref = make_ref("id", "name", "code")
-make_event_ref = make_ref("id")
+make_event_ref = make_ref("id", "start_time", "end_time", "online_links", "description", "faculties", "subjects", "rooms", "day_of_week")
 
 async def join_batch_event(batch_event_mapping: Dict[str, List[str]]):
     try:

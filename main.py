@@ -7,12 +7,13 @@ from database.services import (
 
 from database.config import connect_db, disconnect_db
 from database.models.projections import UserIdNameProjection, BatchIdCodeProjection
-from database.dummy import user_batch_mapping, get_recurring_event_objects
+from database.dummy import user_batch_mapping, get_recurring_event_objects, batch_event_mapping
 from database.migration_scripts import migrate_add_subjects_field, migrate_user_fields, migrate_batch_fields
 from database.models import Event, RecurringEvent
 import database.models as models_module
 import inspect
 from beanie import Document
+from database.services import join_batch_event
 
 async def main():
     await connect_db()
@@ -26,7 +27,7 @@ async def main():
     # await create_faculties(get_faculty_objects())
     # await find_all_users(UserIdNameProjection, write_to_file=True)
     # await create_batches(get_batch_objects())
-    # await find_all_batches(BatchIdCodeProjection, write_to_file=True)
+    await find_all_batches(write_to_file=True)
     # await join_user_batch_subscribers(user_batch_mapping)
     # await create_recurring_events(get_recurring_event_objects())
     # print(get_recurring_event_objects())
@@ -36,6 +37,7 @@ async def main():
     await find_all_events(write_to_file=True)
     # val = await ABC.find({}).to_list()
     # print(val)
+    # await join_batch_event(batch_event_mapping)
     await disconnect_db()
 
 
@@ -46,7 +48,7 @@ if __name__ == "__main__":
 
 """ 
 TODO
-- Join Events to Batches
+- Join Events to Batches - Done!!!!
 - Query Users to Events
 - Join Users to Events
 - Query Users to Events (subscribed + faculty)

@@ -1,6 +1,6 @@
 This is the Python implementation of my timely-node backend. This porting is being done to ensure code can be easily maintained and understood by future maintainers. Partly to speed-up development because Python Supremacy!
 
-This version uses Python | Fast-API | Beanie - Pydantic | MongoDB. 
+This version uses Python | Fast-API | Beanie - Pydantic - Motor | MongoDB. 
 
 The Android Front-End of the app is not uploaded because a few keys are present in my code, I don't feel comfortable posting them to github yet. :')
 

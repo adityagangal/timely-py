@@ -13,7 +13,9 @@ from database.models import Event, RecurringEvent
 import database.models as models_module
 import inspect
 from beanie import Document
-from database.services import join_batch_event
+from database.services import join_batch_event, find_user_events, explain_user_events
+from bson import ObjectId
+import pprint
 
 async def main():
     await connect_db()
@@ -27,17 +29,29 @@ async def main():
     # await create_faculties(get_faculty_objects())
     # await find_all_users(UserIdNameProjection, write_to_file=True)
     # await create_batches(get_batch_objects())
-    await find_all_batches(write_to_file=True)
+    # await find_all_batches(write_to_file=True)
     # await join_user_batch_subscribers(user_batch_mapping)
     # await create_recurring_events(get_recurring_event_objects())
     # print(get_recurring_event_objects())
     # await migrate_add_subjects_field()
     # await migrate_user_fields()
     # await create_recurring_events(get_recurring_event_objects())
-    await find_all_events(write_to_file=True)
+    # await find_all_events(write_to_file=True)
     # val = await ABC.find({}).to_list()
     # print(val)
     # await join_batch_event(batch_event_mapping)
+    print("Rishi")
+    print(*await find_user_events(ObjectId("67fbe790993d093f6b3a9480")), sep="\n")
+    print("Arsh")
+    print(*await find_user_events(ObjectId("67fbe790993d093f6b3a9481")), sep="\n")
+    print("Aparna")
+    print(*await find_user_events(ObjectId("67fbe7dbbf8ea406404f183b")), sep="\n")
+    print("Rishi")
+    await explain_user_events(ObjectId("67fbe790993d093f6b3a9480"))
+    print("Arsh")
+    await explain_user_events(ObjectId("67fbe790993d093f6b3a9481"))
+    print("Aparna")
+    await explain_user_events(ObjectId("67fbe7dbbf8ea406404f183b"))
     await disconnect_db()
 
 
@@ -49,7 +63,7 @@ if __name__ == "__main__":
 """ 
 TODO
 - Join Events to Batches - Done!!!!
-- Query Users to Events
+- Query Users to Events - Done!!!! - 1ms max per query - OMG fast
 - Join Users to Events
 - Query Users to Events (subscribed + faculty)
 - hello 

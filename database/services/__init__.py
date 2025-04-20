@@ -3,7 +3,7 @@ from .batch import create_batch, create_batches, find_all_batches, fetch_batch_m
 from .user_batch import join_user_batch_subscribers
 from .event import create_recurring_event, create_recurring_events, fetch_event_map, find_all_events, find_all_recurring_events
 from .batch_event import join_batch_event
-from .user_events import find_user_events, explain_user_events
+from .query.user_events import find_user_events, explain_user_events
 from .room import create_room, create_rooms, find_all_rooms
 from .subject import create_subject, create_subjects, find_all_subjects
 

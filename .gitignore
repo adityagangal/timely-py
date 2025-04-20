@@ -58,7 +58,7 @@ htmlcov/
 .pyre/
 .pytype/
 .bandit/
-count_lines.py
+.count_lines.py
 
 # Docker (if used)
 *.pid

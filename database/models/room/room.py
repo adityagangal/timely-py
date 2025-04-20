@@ -18,3 +18,6 @@ class Room(BaseModel):
 from ..event.event import Event
 
 Room.model_rebuild()
+
+
+# TODO Can experiment here with keeping all events start and end times, for quick finding if Room is empty

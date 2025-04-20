@@ -39,6 +39,9 @@ TODO
 - Join Users to Events
 - Query Users to Events (subscribed + faculty)
 
+
+TODO 
+- Refactor Bulk Operations to handle embedding and Linked Relationships
 """ 
 
 
@@ -57,7 +60,7 @@ TODO
 
 
 """
-# await find_all_batches(BatchIdCodeProjection, write_to_file=True)
+    # await find_all_batches(BatchIdCodeProjection, write_to_file=True)
     # print(*get_student_objects(), sep="\n")
     # print(*get_faculty_objects(), sep="\n")
     # print(get_batch_objects())"migrate_user_fields",

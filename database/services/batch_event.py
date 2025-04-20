@@ -7,8 +7,8 @@ from ..utils import build_bulk_operations, perform_bulk_updates, make_ref
 from ..models import Batch, Event
 import asyncio
 
-make_batch_ref = make_ref("id", "name", "code")
-make_event_ref = make_ref("id", "start_time", "end_time", "online_links", "description", "faculties", "subjects", "rooms", "day_of_week")
+make_batch_ref, batch_projection = make_ref("id", "name", "code")
+make_event_ref, event_projection = make_ref("id", "start_time", "end_time", "online_links", "description", "faculties", "subjects", "rooms", "day_of_week")
 
 async def join_batch_event(batch_event_mapping: Dict[str, List[str]]):
     try:
@@ -21,8 +21,8 @@ async def join_batch_event(batch_event_mapping: Dict[str, List[str]]):
         event_ids = list({bid for bids in object_mapping.values() for bid in bids})
 
         batch_map, event_map = await asyncio.gather(
-            fetch_batch_map(batch_ids),
-            fetch_event_map(event_ids),
+            fetch_batch_map(batch_ids, batch_projection),
+            fetch_event_map(event_ids, event_projection),
         )
 
         batch_ops, event_ops = build_bulk_operations(

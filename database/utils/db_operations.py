@@ -66,37 +66,3 @@ def find_class_by_name(class_name: str) -> Optional[Type]:
     
     return None
 
-from typing import Type, List, Optional, Union
-from beanie import Document
-from pydantic import BaseModel
-import traceback
-
-async def find_all_polymorphic(
-    model: Type[Document],
-    projection_model: Optional[Type[BaseModel]] = None,
-    write_to_file: bool = False,
-) -> Optional[List[Union[Document, BaseModel]]]:
-    try:
-        query = model.find_all()
-        
-        if projection_model is not None:
-            query = query.project(projection_model)
-
-        # Use raw=True to get raw dicts so Beanie can parse with inheritance
-        raw_data_list = await query.to_list(raw=True)
-
-        # Let Beanie handle polymorphism via its parse_obj
-        result = [model.model_validate(doc) for doc in raw_data_list]
-
-        if write_to_file:
-            model_name = model.__name__
-            proj_name = projection_model.__name__ if projection_model else "Full"
-            filename = f"{model_name}_{proj_name}.json"
-            json_data = [item.model_dump() for item in result]
-            await write_json_file(filename, json_data)
-            print(f"Data written to {filename}")
-
-        return result
-    except Exception:
-        traceback.print_exc()
-        return None

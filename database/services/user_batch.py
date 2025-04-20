@@ -7,8 +7,8 @@ from ..utils import build_bulk_operations, perform_bulk_updates, make_ref
 from ..models import User, Batch
 import asyncio
 
-make_user_ref = make_ref("id", "name")
-make_batch_ref = make_ref("id", "name", "code")
+make_user_ref, user_projection = make_ref("id", "name")
+make_batch_ref, batch_projection = make_ref("id", "name", "code")
 
 async def join_user_batch_subscribers(user_batch_mapping: Dict[str, List[str]]):
     try:
@@ -21,8 +21,8 @@ async def join_user_batch_subscribers(user_batch_mapping: Dict[str, List[str]]):
         batch_ids = list({bid for bids in object_mapping.values() for bid in bids})
 
         user_map, batch_map = await asyncio.gather(
-            fetch_user_map(user_ids),
-            fetch_batch_map(batch_ids)
+            fetch_user_map(user_ids, user_projection),
+            fetch_batch_map(batch_ids, batch_projection)
         )
 
         user_ops, batch_ops = build_bulk_operations(

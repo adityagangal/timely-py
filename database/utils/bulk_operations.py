@@ -2,6 +2,14 @@ from typing import List, Dict, Tuple, Callable, Any
 from pymongo import UpdateOne
 from bson import ObjectId
 
+from pymongo import UpdateOne
+from bson import ObjectId
+from typing import Dict, List, Tuple, Callable, Any
+
+from pymongo import UpdateOne
+from bson import ObjectId
+from typing import Dict, List, Tuple, Callable, Any
+
 def build_bulk_operations(
     source_to_targets: Dict[ObjectId, List[ObjectId]],
     source_map: Dict[ObjectId, Any],
@@ -9,9 +17,27 @@ def build_bulk_operations(
     make_source_ref: Callable[[Any], dict],
     make_target_ref: Callable[[Any], dict],
     source_field: str,
-    target_field: str
+    target_field: str,
+    source_is_linked: bool = True,  # If source model uses linked references (e.g., ObjectId)
+    target_is_linked: bool = False  # If target model uses linked references (e.g., ObjectId)
 ) -> Tuple[List[UpdateOne], List[UpdateOne]]:
+    """
+    Build bulk operations for adding references to List[Link[Model]] (linked) or List[EmbeddedModel] (embedded).
 
+    Args:
+        source_to_targets: Mapping from source ObjectId to a list of target ObjectIds.
+        source_map: Source documents mapped by ObjectId.
+        target_map: Target documents mapped by ObjectId.
+        make_source_ref: Function to generate the source reference (ObjectId or embedded data).
+        make_target_ref: Function to generate the target reference (ObjectId or embedded data).
+        source_field: Field name in the source document to store the reference (e.g., "rooms").
+        target_field: Field name in the target document to store the reference (e.g., "events").
+        source_is_linked: Flag indicating if the source is a link reference (ObjectId).
+        target_is_linked: Flag indicating if the target is a link reference (ObjectId).
+
+    Returns:
+        Tuple of (source updates, target updates) as lists of UpdateOne operations.
+    """
     source_updates: List[UpdateOne] = []
     target_updates: List[UpdateOne] = []
 
@@ -21,7 +47,7 @@ def build_bulk_operations(
             print(f"Source {source_id} not found.")
             continue
 
-        source_ref = make_source_ref(source)
+        source_ref = make_source_ref(source) if not source_is_linked else {"id": source_id}
 
         for target_id in target_ids:
             target = target_map.get(target_id)
@@ -29,7 +55,7 @@ def build_bulk_operations(
                 print(f"Target {target_id} not found.")
                 continue
 
-            target_ref = make_target_ref(target)
+            target_ref = make_target_ref(target) if not target_is_linked else {"id": target_id}
 
             source_updates.append(UpdateOne(
                 {"_id": source_ref["id"]},

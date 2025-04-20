@@ -16,6 +16,8 @@ from beanie import Document
 from database.services import join_batch_event, find_user_events, explain_user_events
 from bson import ObjectId
 import pprint
+from database.services import create_rooms
+from database.dummy import get_room_objects
 
 async def main():
     await connect_db()
@@ -40,18 +42,20 @@ async def main():
     # val = await ABC.find({}).to_list()
     # print(val)
     # await join_batch_event(batch_event_mapping)
-    print("Rishi")
-    print(*await find_user_events(ObjectId("67fbe790993d093f6b3a9480")), sep="\n")
-    print("Arsh")
-    print(*await find_user_events(ObjectId("67fbe790993d093f6b3a9481")), sep="\n")
-    print("Aparna")
-    print(*await find_user_events(ObjectId("67fbe7dbbf8ea406404f183b")), sep="\n")
-    print("Rishi")
-    await explain_user_events(ObjectId("67fbe790993d093f6b3a9480"))
-    print("Arsh")
-    await explain_user_events(ObjectId("67fbe790993d093f6b3a9481"))
-    print("Aparna")
-    await explain_user_events(ObjectId("67fbe7dbbf8ea406404f183b"))
+    # print("Rishi")
+    # print(*await find_user_events(ObjectId("67fbe790993d093f6b3a9480")), sep="\n")
+    # print("Arsh")
+    # print(*await find_user_events(ObjectId("67fbe790993d093f6b3a9481")), sep="\n")
+    # print("Aparna")
+    # print(*await find_user_events(ObjectId("67fbe7dbbf8ea406404f183b")), sep="\n")
+    # print("Rishi")
+    # await explain_user_events(ObjectId("67fbe790993d093f6b3a9480"))
+    # print("Arsh")
+    # await explain_user_events(ObjectId("67fbe790993d093f6b3a9481"))
+    # print("Aparna")
+    # await explain_user_events(ObjectId("67fbe7dbbf8ea406404f183b"))
+    await create_rooms(get_room_objects())
+    
     await disconnect_db()
 
 

@@ -16,12 +16,48 @@ from beanie import Document
 from database.services import join_batch_event, find_user_events, explain_user_events
 from bson import ObjectId
 import pprint
-from database.services import create_rooms
-from database.dummy import get_room_objects
+from database.services import create_rooms, create_subjects, find_all_rooms, find_all_subjects
+from database.dummy import get_room_objects, get_subject_objects
 
 async def main():
     await connect_db()
-    # await find_all_batches(BatchIdCodeProjection, write_to_file=True)
+    
+
+    
+    await disconnect_db()
+
+
+# Standard Python entry point
+if __name__ == "__main__":
+    asyncio.run(main())
+
+
+""" 
+TODO
+- Join Events to Batches - Done!!!!
+- Query Users to Events - Done!!!! - 1ms max per query - OMG fast
+- Join Users to Events
+- Query Users to Events (subscribed + faculty)
+
+""" 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
+# await find_all_batches(BatchIdCodeProjection, write_to_file=True)
     # print(*get_student_objects(), sep="\n")
     # print(*get_faculty_objects(), sep="\n")
     # print(get_batch_objects())"migrate_user_fields",
@@ -54,22 +90,8 @@ async def main():
     # await explain_user_events(ObjectId("67fbe790993d093f6b3a9481"))
     # print("Aparna")
     # await explain_user_events(ObjectId("67fbe7dbbf8ea406404f183b"))
-    await create_rooms(get_room_objects())
-    
-    await disconnect_db()
-
-
-# Standard Python entry point
-if __name__ == "__main__":
-    asyncio.run(main())
-
-
-""" 
-TODO
-- Join Events to Batches - Done!!!!
-- Query Users to Events - Done!!!! - 1ms max per query - OMG fast
-- Join Users to Events
-- Query Users to Events (subscribed + faculty)
-- hello 
-
-""" 
+    # await create_rooms(get_room_objects())
+    # await create_subjects(get_subject_objects())
+    # await find_all_rooms(write_to_file=True)
+    # await find_all_subjects(write_to_file=True)
+"""

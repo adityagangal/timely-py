@@ -4,6 +4,7 @@ from .user_to_batch import user_batch_mapping, batch_user_mapping
 from .events import get_recurring_event_objects
 from .batch_to_event import batch_event_mapping, event_batch_mapping
 from .rooms import get_room_objects
+from .subjects import get_subject_objects
 
 __all__ = [
     "get_batch_objects",
@@ -12,4 +13,5 @@ __all__ = [
     "get_recurring_event_objects",
     "batch_event_mapping", "event_batch_mapping",
     "get_room_objects",
+    "get_subject_objects",
 ]

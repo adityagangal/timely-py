@@ -2,7 +2,7 @@ from .user import create_student, create_students, find_all_users, create_facult
 from .batch import create_batch, create_batches, find_all_batches, fetch_batch_map
 from .user_batch import join_user_batch_subscribers
 from .event import create_recurring_event, create_recurring_events, fetch_event_map, find_all_events, find_all_recurring_events
-from .batch_event import join_batch_event
+from .batch_event import join_batch_event, join_batch_event_server_side
 from .query.user_events import find_user_events, explain_user_events
 from .room import create_room, create_rooms, find_all_rooms, fetch_room_map
 from .subject import create_subject, create_subjects, find_all_subjects, fetch_subject_map

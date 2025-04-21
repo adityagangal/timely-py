@@ -9,7 +9,7 @@ from database.config import connect_db, disconnect_db
 from database.models.projections import UserIdNameProjection, BatchIdCodeProjection
 from database.dummy import user_batch_mapping, get_recurring_event_objects, batch_event_mapping
 from database.migration_scripts import migrate_add_subjects_field, migrate_user_fields, migrate_batch_fields
-from database.models import Event, RecurringEvent, User, Room
+from database.models import Event, RecurringEvent, User, Room, Batch
 import database.models as models_module
 import inspect
 from beanie import Document
@@ -21,7 +21,7 @@ from database.dummy import get_room_objects, get_subject_objects, user_event_map
 from database.services import join_user_event, join_event_room_server_side, join_event_subject_server_side
 from database.dummy import event_room_mapping, event_subject_mapping
 from database.utils import reverse_mapping
-from database.services import join_user_event_server_side
+from database.services import join_user_event_server_side, join_batch_event_server_side
 
 from typing import Dict, List
 from bson import ObjectId
@@ -32,17 +32,25 @@ from database.config import get_connection
 async def main():
     await connect_db()
     # await join_user_event(user_event_mapping)
-    # await User.update_all({ "$set": {"faculty_events": []} })
+    # await Batch.update_all({ "$set": {"events": []} })
+    # object_mapping: Dict[ObjectId, List[ObjectId]] = {
+    #         ObjectId(uid): [ObjectId(bid) for bid in bids]
+    #         for uid, bids in batch_event_mapping.items()
+    #     }
+    # await join_batch_event_server_side(object_mapping)
     # await Event.find_all(with_children=True).update({ "$set": {"faculties": []} })
-    object_mapping: Dict[ObjectId, List[ObjectId]] = {
-            ObjectId(uid): [ObjectId(bid) for bid in bids]
-            for uid, bids in event_subject_mapping.items()
-        }
-    await join_event_subject_server_side(object_mapping)
-    await find_all_events(write_to_file=True)
-    await find_all_users(write_to_file=True)
-    await find_all_subjects(write_to_file=True)
-    await find_all_rooms(write_to_file=True)
+    print("Rishi")
+    pprint.pprint(await find_user_events(ObjectId("67fbe790993d093f6b3a9480")))
+    print("Arsh")
+    pprint.pprint(await find_user_events(ObjectId("67fbe790993d093f6b3a9481")))
+    print("Aparna")
+    pprint.pprint(await find_user_events(ObjectId("67fbe7dbbf8ea406404f183b")))
+    print("Rishi")
+    await explain_user_events(ObjectId("67fbe790993d093f6b3a9480"))
+    print("Arsh")
+    await explain_user_events(ObjectId("67fbe790993d093f6b3a9481"))
+    print("Aparna")
+    await explain_user_events(ObjectId("67fbe7dbbf8ea406404f183b"))
     await disconnect_db()
 
 

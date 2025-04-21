@@ -31,26 +31,6 @@ from database.config import get_connection
 
 async def main():
     await connect_db()
-    # await join_user_event(user_event_mapping)
-    # await Batch.update_all({ "$set": {"events": []} })
-    # object_mapping: Dict[ObjectId, List[ObjectId]] = {
-    #         ObjectId(uid): [ObjectId(bid) for bid in bids]
-    #         for uid, bids in batch_event_mapping.items()
-    #     }
-    # await join_batch_event_server_side(object_mapping)
-    # await Event.find_all(with_children=True).update({ "$set": {"faculties": []} })
-    print("Rishi")
-    pprint.pprint(await find_user_events(ObjectId("67fbe790993d093f6b3a9480")))
-    print("Arsh")
-    pprint.pprint(await find_user_events(ObjectId("67fbe790993d093f6b3a9481")))
-    print("Aparna")
-    pprint.pprint(await find_user_events(ObjectId("67fbe7dbbf8ea406404f183b")))
-    print("Rishi")
-    await explain_user_events(ObjectId("67fbe790993d093f6b3a9480"))
-    print("Arsh")
-    await explain_user_events(ObjectId("67fbe790993d093f6b3a9481"))
-    print("Aparna")
-    await explain_user_events(ObjectId("67fbe7dbbf8ea406404f183b"))
     await disconnect_db()
 
 
@@ -65,7 +45,7 @@ TODO
 - Query Users to Events - Done!!!! - 1ms max per query - OMG fast
 - Join Users to Events - Done!!!
 - Join Events to Subjects and Rooms - Done!!!
-- Query Users to Events (subscribed + faculty)
+- Query Users to Events (subscribed + faculty) - Done!!!!
 
 
 TODO 

@@ -6,6 +6,8 @@ from .subject import fetch_subject_map
 from ..utils import build_bulk_operations, perform_bulk_updates, make_ref
 from ..models import Event, Subject
 import asyncio
+from pymongo import UpdateOne
+from database.config import get_connection
 
 make_event_ref, event_projection = make_ref("id") # , "start_time", "end_time", "online_links", "description", "faculties", "subjects", "rooms", "day_of_week")
 make_subject_ref, subject_projection = make_ref("id", "name", "code")
@@ -42,3 +44,65 @@ async def join_event_subject(event_subject_mapping: Dict[str, List[str]]):
     except Exception as e:
         print(f"Bulk join failed: {e}")
         traceback.print_exc()
+
+async def join_event_subject_server_side(event_subject_mapping: dict, batch_size: int = 1000):
+    """
+    Push subject<->event ObjectIds, then hydrate Event.subjects with {id, name, code}
+    """
+    subject_ops, event_ops = [], []
+    db = get_connection()
+    event_coll = db["Events"]
+    subjects_coll = db["Subjects"]
+
+
+    for event_id, sub_ids in event_subject_mapping.items():
+        for sid in sub_ids:
+            event_ops.append(
+                UpdateOne(
+                    {"_id": ObjectId(event_id)},
+                    {"$addToSet": {"subjects": ObjectId(sid)}}
+                )
+            )
+            subject_ops.append(
+                UpdateOne(
+                    {"_id": ObjectId(sid)},
+                    {"$addToSet": {"events": ObjectId(event_id)}}
+                )
+            )
+
+    # Bulk write operations
+    for ops, coll in ((subject_ops, subjects_coll), (event_ops, event_coll)):
+        for i in range(0, len(ops), batch_size):
+            batch = ops[i:i + batch_size]
+            if batch:
+                await coll.bulk_write(batch)
+
+    # Hydrate Event.subjects
+    await event_coll.aggregate([
+        {"$lookup": {
+            "from": "Subjects",
+            "localField": "subjects",
+            "foreignField": "_id",
+            "as": "subject_docs"
+        }},
+        {"$set": {
+            "subjects": {
+                "$map": {
+                    "input": "$subject_docs",
+                    "as": "s",
+                    "in": {
+                        "id": "$$s._id",
+                        "name": "$$s.name",
+                        "code": "$$s.code"
+                    }
+                }
+            }
+        }},
+        {"$unset": "subject_docs"},
+        {"$merge": {
+            "into": "Events",
+            "on": "_id",
+            "whenMatched": "merge",
+            "whenNotMatched": "discard"
+        }}
+    ]).to_list(length=None)

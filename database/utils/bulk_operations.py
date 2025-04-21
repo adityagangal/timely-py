@@ -18,7 +18,7 @@ def build_bulk_operations(
     make_target_ref: Callable[[Any], dict],
     source_field: str,
     target_field: str,
-    source_is_linked: bool = True,  # If source model uses linked references (e.g., ObjectId)
+    source_is_linked: bool = False,  # If source model uses linked references (e.g., ObjectId)
     target_is_linked: bool = False  # If target model uses linked references (e.g., ObjectId)
 ) -> Tuple[List[UpdateOne], List[UpdateOne]]:
     """
@@ -71,6 +71,7 @@ def build_bulk_operations(
 
     return source_updates, target_updates
 
+
 async def perform_bulk_updates(
     source_model,
     target_model,
@@ -88,3 +89,51 @@ async def perform_bulk_updates(
     if target_ops:
         for chunk in chunk_operations(target_ops, chunk_size):
             await target_model.get_motor_collection().bulk_write(chunk, ordered=False)
+
+
+def build_bulk_operations_one_sided(
+    source_to_targets: Dict[ObjectId, List[ObjectId]],
+    source_map: Dict[ObjectId, Any],
+    make_source_ref: Callable[[Any], dict],
+    target_field: str,
+    source_is_linked: bool = False,  # If source model uses linked references (e.g., ObjectId)
+) -> Tuple[List[UpdateOne], List[UpdateOne]]:
+    """
+    Build bulk operations for adding references to List[Link[Model]] (linked) or List[EmbeddedModel] (embedded).
+
+    Args:
+        source_to_targets: Mapping from source ObjectId to a list of target ObjectIds.
+        source_map: Source documents mapped by ObjectId.
+        target_map: Target documents mapped by ObjectId.
+        make_source_ref: Function to generate the source reference (ObjectId or embedded data).
+        make_target_ref: Function to generate the target reference (ObjectId or embedded data).
+        source_field: Field name in the source document to store the reference (e.g., "rooms").
+        target_field: Field name in the target document to store the reference (e.g., "events").
+        source_is_linked: Flag indicating if the source is a link reference (ObjectId).
+        target_is_linked: Flag indicating if the target is a link reference (ObjectId).
+
+    Returns:
+        Tuple of (source updates, target updates) as lists of UpdateOne operations.
+    """
+
+    """
+    Needs the ids to be validated beforehand.
+    """
+    target_updates: List[UpdateOne] = []
+
+    for source_id, target_ids in source_to_targets.items():
+        source = source_map.get(source_id)
+        if not source:
+            print(f"Source {source_id} not found.")
+            continue
+
+        source_ref = make_source_ref(source) if not source_is_linked else {"id": source_id}
+
+        for target_id in target_ids:
+            target_updates.append(UpdateOne(
+                {"_id": target_id},
+                {"$addToSet": {target_field: source_ref}},
+                upsert=False
+            ))
+
+    return target_updates

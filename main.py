@@ -9,7 +9,7 @@ from database.config import connect_db, disconnect_db
 from database.models.projections import UserIdNameProjection, BatchIdCodeProjection
 from database.dummy import user_batch_mapping, get_recurring_event_objects, batch_event_mapping
 from database.migration_scripts import migrate_add_subjects_field, migrate_user_fields, migrate_batch_fields
-from database.models import Event, RecurringEvent
+from database.models import Event, RecurringEvent, User, Room
 import database.models as models_module
 import inspect
 from beanie import Document
@@ -17,13 +17,32 @@ from database.services import join_batch_event, find_user_events, explain_user_e
 from bson import ObjectId
 import pprint
 from database.services import create_rooms, create_subjects, find_all_rooms, find_all_subjects
-from database.dummy import get_room_objects, get_subject_objects
+from database.dummy import get_room_objects, get_subject_objects, user_event_mapping
+from database.services import join_user_event, join_event_room_server_side, join_event_subject_server_side
+from database.dummy import event_room_mapping, event_subject_mapping
+from database.utils import reverse_mapping
+from database.services import join_user_event_server_side
+
+from typing import Dict, List
+from bson import ObjectId
+from pymongo import UpdateOne
+from database.models import User, Event
+from database.config import get_connection
 
 async def main():
     await connect_db()
-    
-
-    
+    # await join_user_event(user_event_mapping)
+    # await User.update_all({ "$set": {"faculty_events": []} })
+    # await Event.find_all(with_children=True).update({ "$set": {"faculties": []} })
+    object_mapping: Dict[ObjectId, List[ObjectId]] = {
+            ObjectId(uid): [ObjectId(bid) for bid in bids]
+            for uid, bids in event_subject_mapping.items()
+        }
+    await join_event_subject_server_side(object_mapping)
+    await find_all_events(write_to_file=True)
+    await find_all_users(write_to_file=True)
+    await find_all_subjects(write_to_file=True)
+    await find_all_rooms(write_to_file=True)
     await disconnect_db()
 
 
@@ -36,12 +55,18 @@ if __name__ == "__main__":
 TODO
 - Join Events to Batches - Done!!!!
 - Query Users to Events - Done!!!! - 1ms max per query - OMG fast
-- Join Users to Events
+- Join Users to Events - Done!!!
+- Join Events to Subjects and Rooms - Done!!!
 - Query Users to Events (subscribed + faculty)
 
 
 TODO 
 - Refactor Bulk Operations to handle embedding and Linked Relationships
+- Use new join operations instead of Bulk operations - Remove Bulk operations first, then think of a way
+- to refactor all functions
+- Bulk Operations functions need to be cleaned
+- Also, figure out a way to programmatically change the pipeline, make it dynamic
+- Can change the Link types to Oid and Embedded types to Union of Embedded type and Oid
 """ 
 
 
@@ -98,3 +123,17 @@ TODO
     # await find_all_rooms(write_to_file=True)
     # await find_all_subjects(write_to_file=True)
 """
+
+# Usage example:
+# import asyncio
+# from bson import ObjectId
+#
+# async def main():
+#     db = get_db("mongodb://localhost:27017", "college")
+#     mapping = {
+#         ObjectId("...userId1..."): [ObjectId("...eventIdA..."), ObjectId("...eventIdB...")],
+#         ObjectId("...userId2..."): [ObjectId("...eventIdB...")]
+#     }
+#     await join_user_event_server_side(mapping, db)
+#
+# asyncio.run(main())

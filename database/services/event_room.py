@@ -6,6 +6,8 @@ from .room import fetch_room_map
 from ..utils import build_bulk_operations, perform_bulk_updates, make_ref
 from ..models import Event, Room
 import asyncio
+from pymongo import UpdateOne
+from database.config import get_connection
 
 make_event_ref, event_projection = make_ref("id") # , "start_time", "end_time", "online_links", "description", "faculties", "rooms", "rooms", "day_of_week")
 make_room_ref, room_projection = make_ref("id", "code")
@@ -42,3 +44,63 @@ async def join_event_room(event_room_mapping: Dict[str, List[str]]):
     except Exception as e:
         print(f"Bulk join failed: {e}")
         traceback.print_exc()
+
+async def join_event_room_server_side(event_room_mapping: dict, batch_size: int = 1000):
+    """
+    Push room<->event ObjectIds, then hydrate Event.rooms with {id, code}
+    """
+    room_ops, event_ops = [], []
+    db = get_connection()
+    event_coll = db["Events"]
+    room_coll = db["Rooms"]
+
+    for event_id, room_ids in event_room_mapping.items():
+        for rid in room_ids:
+            event_ops.append(
+                UpdateOne(
+                    {"_id": ObjectId(event_id)},
+                    {"$addToSet": {"rooms": ObjectId(rid)}}
+                )
+            )
+            room_ops.append(
+                UpdateOne(
+                    {"_id": ObjectId(rid)},
+                    {"$addToSet": {"events": ObjectId(event_id)}}
+                )
+            )
+
+    # Bulk write operations
+    for ops, coll in ((room_ops, room_coll), (event_ops, event_coll)):
+        for i in range(0, len(ops), batch_size):
+            batch = ops[i:i + batch_size]
+            if batch:
+                await coll.bulk_write(batch)
+
+    # Hydrate Event.rooms
+    await event_coll.aggregate([
+        {"$lookup": {
+            "from": "Rooms",
+            "localField": "rooms",
+            "foreignField": "_id",
+            "as": "room_docs"
+        }},
+        {"$set": {
+            "rooms": {
+                "$map": {
+                    "input": "$room_docs",
+                    "as": "r",
+                    "in": {
+                        "id": "$$r._id",
+                        "code": "$$r.code"
+                    }
+                }
+            }
+        }},
+        {"$unset": "room_docs"},
+        {"$merge": {
+            "into": "Events",
+            "on": "_id",
+            "whenMatched": "merge",
+            "whenNotMatched": "discard"
+        }}
+    ]).to_list(length=None)

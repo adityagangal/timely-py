@@ -6,6 +6,9 @@ from .batch_event import join_batch_event
 from .query.user_events import find_user_events, explain_user_events
 from .room import create_room, create_rooms, find_all_rooms, fetch_room_map
 from .subject import create_subject, create_subjects, find_all_subjects, fetch_subject_map
+from .user_event import join_user_event_faculties, join_user_event, join_user_event_server_side
+from .event_room import join_event_room_server_side
+from .event_subject import join_event_subject_server_side
 
 __all__ = [
     "create_student", "create_students", "create_faculty", "create_faculties", "find_all_users", "fetch_user_map",
@@ -16,4 +19,7 @@ __all__ = [
     "find_user_events", "explain_user_events",
     "create_room", "create_rooms", "find_all_rooms",
     "create_subject", "create_subjects", "find_all_subjects",
+    "join_user_event_faculties", "join_user_event", "join_user_event_server_side",
+    "join_event_room_server_side", 
+    "join_event_subject_server_side",
 ]

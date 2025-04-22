@@ -18,3 +18,5 @@ The most challenging part of this project has been the schema design. Having con
 
 ### The Mongo Schema Design
 Schema design for this application has been a crucial part of its speed and ultimately its scalablity. The full structure of the collections will be shared here soon.
+![image](https://github.com/user-attachments/assets/63e14450-69a8-4a77-8733-fbf2769bf333)
+

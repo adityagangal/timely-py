@@ -17,6 +17,6 @@ The most challenging part of this project has been the schema design. Having con
 ![image](https://github.com/user-attachments/assets/26dabfb2-f181-4b63-a6d9-635475d4fab6)
 
 ### The Mongo Schema Design
-Schema design for this application has been a crucial part of its speed and ultimately its scalablity. The full structure of the collections will be shared here soon.
+Schema design for this application has been a crucial part of its speed and ultimately its scalablity. It took 3 weeks and 4 iterations to make a Mongo friendly denormalised schema.
 ![image](https://github.com/user-attachments/assets/63e14450-69a8-4a77-8733-fbf2769bf333)
 

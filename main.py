@@ -55,6 +55,10 @@ TODO
 - Bulk Operations functions need to be cleaned
 - Also, figure out a way to programmatically change the pipeline, make it dynamic
 - Can change the Link types to Oid and Embedded types to Union of Embedded type and Oid
+
+- Refactor Pipelines to be built dynamically - DRY
+- Add new code to change fields in existing documents
+- Add code to propagate changes to linked documents
 """ 
 
 
@@ -112,16 +116,3 @@ TODO
     # await find_all_subjects(write_to_file=True)
 """
 
-# Usage example:
-# import asyncio
-# from bson import ObjectId
-#
-# async def main():
-#     db = get_db("mongodb://localhost:27017", "college")
-#     mapping = {
-#         ObjectId("...userId1..."): [ObjectId("...eventIdA..."), ObjectId("...eventIdB...")],
-#         ObjectId("...userId2..."): [ObjectId("...eventIdB...")]
-#     }
-#     await join_user_event_server_side(mapping, db)
-#
-# asyncio.run(main())

@@ -49,7 +49,6 @@ TODO
 
 
 TODO 
-- Refactor Bulk Operations to handle embedding and Linked Relationships
 - Use new join operations instead of Bulk operations - Remove Bulk operations first, then think of a way
 - to refactor all functions
 - Bulk Operations functions need to be cleaned

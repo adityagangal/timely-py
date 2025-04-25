@@ -31,6 +31,7 @@ from database.config import get_connection
 
 async def main():
     await connect_db()
+    await explain_user_events(ObjectId("67fbe790993d093f6b3a9480"))
     await disconnect_db()
 
 

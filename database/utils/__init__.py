@@ -6,6 +6,7 @@ from .db_create import create_many, create_one
 from .bulk_operations import build_bulk_operations, perform_bulk_updates, build_bulk_operations_one_sided
 from .make_ref import make_ref
 from .fetch_entity_map import fetch_entity_map
+from .join_objects import bulk_push_oid_links, hydrate_references
 
 __all__ = [
     "prepare_objects", "find_all", "T", "P", "write_json_file", "reverse_mapping",
@@ -13,4 +14,5 @@ __all__ = [
     "build_bulk_operations", "perform_bulk_updates", "build_bulk_operations_one_sided",
     "make_ref",
     "fetch_entity_map",
+    "bulk_push_oid_links", "hydrate_references",
 ]

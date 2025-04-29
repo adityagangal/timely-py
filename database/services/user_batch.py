@@ -51,7 +51,7 @@ from ..utils import bulk_push_oid_links, hydrate_references
 
 async def join_user_batch_subscribers(user_batch_mapping: Dict[str, List[str]]):
     try:
-        
+
         db = get_connection()
         user_coll = db["Users"]
         batch_coll = db["Batches"]

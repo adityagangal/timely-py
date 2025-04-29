@@ -108,7 +108,7 @@ make_subject_ref, subject_projection = make_ref("id", "name", "code")
 #         }}
 #     ]).to_list(length=None)
 
-async def join_event_subject_server_side(event_subject_mapping: dict, batch_size: int = 1000):
+async def join_event_subject(event_subject_mapping: Dict[str, List[str]], batch_size: int = 1000):
     try:
         db = get_connection()
         event_coll = db["Events"]

@@ -153,7 +153,7 @@ from ..utils import bulk_push_oid_links, hydrate_references
 #         }}
 #     ]).to_list(length=None)
 
-async def join_batch_event_server_side(object_mapping: Dict[ObjectId, List[ObjectId]], batch_size: int = 1000):
+async def join_batch_event(object_mapping: Dict[str, List[str]], batch_size: int = 1000):
     try:
         db = get_connection()
         event_coll = db["Events"]

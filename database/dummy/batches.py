@@ -1,7 +1,7 @@
 from ..utils import prepare_objects
 
 batch_keys = ["name", "code", "description",
-            "subscribers", "admins", "events", "live_events"]
+            "participants", "admins", "events", "live_events"]
 
 batches = [
     ["AIML 2025", "AIML-2025", "All AIML 2025 passout students", [], [], [], []],

@@ -1,5 +1,5 @@
 from pymongo import UpdateOne
-from typing import Dict, List
+from typing import Dict, List, Union
 from bson import ObjectId
 
 
@@ -37,29 +37,38 @@ async def hydrate_references(
     from_collection: str,
     foreign_field: str,
     out_field: str,
-    projection_map: Dict[str, str],
+    projection_map: Dict[str, Union[str, Dict]],
 ):
     await coll.aggregate([
-        {"$lookup": {
-            "from": from_collection,
-            "localField": local_field,
-            "foreignField": foreign_field,
-            "as": f"{out_field}_docs"
-        }},
-        {"$set": {
-            out_field: {
-                "$map": {
-                    "input": f"${out_field}_docs",
-                    "as": "doc",
-                    "in": {key: f"$$doc.{val}" for key, val in projection_map.items()}
+        {
+            "$lookup": {
+                "from": from_collection,
+                "localField": local_field,
+                "foreignField": foreign_field,
+                "as": f"{out_field}_docs"
+            }
+        },
+        {
+            "$set": {
+                out_field: {
+                    "$map": {
+                        "input": f"${out_field}_docs",
+                        "as": "doc",
+                        "in": {
+                            key: (val if isinstance(val, dict) else f"$$doc.{val}")
+                            for key, val in projection_map.items()
+                        }
+                    }
                 }
             }
-        }},
-        {"$unset": f"{out_field}_docs"},
-        {"$merge": {
-            "into": coll.name,
-            "on": "_id",
-            "whenMatched": "merge",
-            "whenNotMatched": "discard"
-        }}
+        },
+        { "$unset": f"{out_field}_docs" },
+        {
+            "$merge": {
+                "into": coll.name,
+                "on": "_id",
+                "whenMatched": "merge",
+                "whenNotMatched": "discard"
+            }
+        }
     ]).to_list(length=None)

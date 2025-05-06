@@ -8,7 +8,7 @@ from .subject import create_subject, create_subjects, find_all_subjects, fetch_s
 from .user_event import join_user_event_faculty
 from .event_room import join_event_room
 from .event_subject import join_event_subject
-from .user_batch import join_user_batch_subscribers
+from .user_batch import join_user_batch_participants
 
 __all__ = [
     "create_student", "create_students", "create_faculty", "create_faculties", "find_all_users", "fetch_user_map",
@@ -21,5 +21,5 @@ __all__ = [
     "join_event_room", 
     "join_event_subject",
     "join_batch_event",
-    "join_user_batch_subscribers",
+    "join_user_batch_participants",
 ]

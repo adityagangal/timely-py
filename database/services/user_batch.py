@@ -49,7 +49,7 @@ make_batch_ref, batch_projection = make_ref("id", "name", "code")
 from database.config import get_connection
 from ..utils import bulk_push_oid_links, hydrate_references
 
-async def join_user_batch_subscribers(user_batch_mapping: Dict[str, List[str]]):
+async def join_user_batch_participants(user_batch_mapping: Dict[str, List[str]]):
     try:
 
         db = get_connection()
@@ -59,7 +59,7 @@ async def join_user_batch_subscribers(user_batch_mapping: Dict[str, List[str]]):
         await bulk_push_oid_links(
             mapping=user_batch_mapping,
             source_field="in_batches",
-            target_field="subscribers",
+            target_field="participants",
             source_coll=user_coll,
             target_coll=batch_coll,
         )
@@ -75,11 +75,11 @@ async def join_user_batch_subscribers(user_batch_mapping: Dict[str, List[str]]):
 
         await hydrate_references(
             coll=batch_coll,
-            local_field="subscribers",
+            local_field="participants",
             from_collection="user",
             foreign_field="_id",
-            out_field="subscribers",
-            projection_map={"id":"_id", "name":"name"},
+            out_field="participants",
+            projection_map={"id":"_id", "name":"name", "tags": {"$literal": []}},
         )
 
         print("Successfully performed bulk join operations.")

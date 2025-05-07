@@ -28,6 +28,8 @@ client = AsyncIOMotorClient(
 )
 
 def get_connection():
+    if not DB_NAME:
+        raise EnvironmentError("Environment variable DB_NAME is missing or empty")
     return client[DB_NAME]
 
 async def get_session():

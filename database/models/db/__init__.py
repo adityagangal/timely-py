@@ -5,6 +5,7 @@ from .live_event import LiveEvent
 from .override import Override
 from .room import Room
 from .subject import Subject
+from .batch import Batch
 
 __all__ = [
     "Announcement",
@@ -17,4 +18,5 @@ __all__ = [
     "Override",
     "Room",
     "Subject",
+    "Batch"
 ]

@@ -1,17 +1,23 @@
 import asyncio
 from database.config import connect_db, disconnect_db
 from database.services import explain_user_events, find_user_events
-
+from datetime import datetime, timezone
+from database.models import CreatedByEntry
 
 from typing import Dict, List
 from bson import ObjectId
 from pymongo import UpdateOne
 from database.models import User, Event
 from database.config import get_connection
-
+from database.services.test import push_into_latest_hello, create_new_announcement_with_model
+from database.services.announcement import create_announcement
 async def main():
     await connect_db()
-    print(*await find_user_events(ObjectId("67fbe790993d093f6b3a9480")), sep = "\n")
+    # print(*await find_user_events(ObjectId("67fbe790993d093f6b3a9480")), sep = "\n")
+    # await create_new_announcement_with_model(ObjectId("67fbe9baa73a6a81e5e65b0f"))
+    # await push_into_latest_hello(ObjectId("67fbe9baa73a6a81e5e65b0f"))
+    await create_announcement("This is an actual Announcement!!!", ObjectId("67fbe9baa73a6a81e5e65b0f"), CreatedByEntry(_id=ObjectId("67fbe790993d093f6b3a9480"), name="Rishi Tiku"), datetime.now(timezone.utc))
+
     await disconnect_db()
 
 
@@ -29,6 +35,8 @@ TODO
 - Query Users to Events (subscribed + faculty) - Done!!!!
 - Use new join operations instead of Bulk operations - Remove Bulk operations first, then think of a way
 - to refactor all functions - Done!! Need to test them out once
+- Reorganize Models Folder - Done!! Need to change Dummy Data to suit fields
+- Create Announcements - Done!! 
 
 TODO 
 - Bulk Operations functions need to be cleaned, and new functions to be tested- TODO
@@ -37,13 +45,15 @@ TODO
 - Need to do change Detection now, whenever a field gets changed, change that field to the corresponding 
 - fields as well.
 
-- Create Announcements
+
+- Add Logic to create a new announcement chunk document if it nears 15MB
+
 - Create Batch-Admins Logic
 - Find person whereabouts
 - Find empty rooms
 - Change Updated at field
 
-- Reorganize models folder
+- Change Dummy
 
 """ 
 

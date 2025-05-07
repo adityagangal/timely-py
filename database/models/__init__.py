@@ -1,8 +1,8 @@
 # enum
-from enums import EventStatusEnum
+from .enums import EventStatusEnum
 
 # embedded
-from embedded import (
+from .embedded import (
     BatchIdCode,
     BatchIdNameCode,
     EventId,
@@ -22,7 +22,7 @@ from embedded import (
 )
 
 # db
-from db import (
+from .db import (
     Announcement,
     User,
     Faculty,
@@ -33,10 +33,11 @@ from db import (
     Override,
     Room,
     Subject,
+    Batch,
 )
 
 # core
-from core import BaseDocument
+from .core import BaseDocument
 
 __all__ = [
     # enum
@@ -71,6 +72,7 @@ __all__ = [
     "Override",
     "Room",
     "Subject",
+    "Batch"
 
     # core
     "BaseDocument",

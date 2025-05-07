@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, List
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from beanie import PydanticObjectId
 

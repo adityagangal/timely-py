@@ -3,7 +3,7 @@ from typing import Type, Optional, List, Union, Dict
 from database.utils import find_all, P
 from ..utils import create_one, create_many, fetch_entity_map
 from beanie import Document
-from ..models.reference_models import BatchReferenceIdNameCode as BatchProjection
+from ..models import BatchIdNameCode as BatchProjection
 from bson import ObjectId
 
 async def create_batch(batch_data: dict) -> Optional[Document]:

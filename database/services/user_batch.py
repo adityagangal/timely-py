@@ -4,11 +4,10 @@ import traceback
 from .user import fetch_user_map
 from .batch import fetch_batch_map
 from ..utils import build_bulk_operations, perform_bulk_updates, make_ref
-from ..models import User, Batch
-import asyncio
 
 # TODO 
 # create a new function join user batch server side
+# convert string to Oid mappings
 
 make_user_ref, user_projection = make_ref("id", "name")
 make_batch_ref, batch_projection = make_ref("id", "name", "code")

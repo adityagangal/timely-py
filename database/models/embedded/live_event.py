@@ -1,3 +1,5 @@
+from beanie import PydanticObjectId
+from bson import ObjectId
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
@@ -9,6 +11,7 @@ class LiveEventEmbedded(BaseModel):
 
 
 class LiveEventEntry(BaseModel):
+    id: PydanticObjectId = Field(default_factory=ObjectId)
     start_datetime: datetime = Field(..., description="Starting date and time")
     end_datetime: datetime = Field(..., description="Ending date and time")
     online_links: Optional[List[str]] = Field(default=[], description="Online Links")

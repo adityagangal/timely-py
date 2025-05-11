@@ -11,12 +11,14 @@ from database.models import User, Event
 from database.config import get_connection
 from database.services.test import push_into_latest_hello, create_new_announcement_with_model
 from database.services.announcement import create_announcement
+from utils.logging_config import setup_logging
 async def main():
+    setup_logging()
     await connect_db()
     # print(*await find_user_events(ObjectId("67fbe790993d093f6b3a9480")), sep = "\n")
     # await create_new_announcement_with_model(ObjectId("67fbe9baa73a6a81e5e65b0f"))
     # await push_into_latest_hello(ObjectId("67fbe9baa73a6a81e5e65b0f"))
-    await create_announcement("This is an actual Announcement!!!", ObjectId("67fbe9baa73a6a81e5e65b0f"), CreatedByEntry(_id=ObjectId("67fbe790993d093f6b3a9480"), name="Rishi Tiku"), datetime.now(timezone.utc))
+    # await create_announcement("This is an actual Announcement!!!", ObjectId("67fbe9baa73a6a81e5e65b0f"), CreatedByEntry(_id=ObjectId("67fbe790993d093f6b3a9480"), name="Rishi Tiku"), datetime.now(timezone.utc))
 
     await disconnect_db()
 
@@ -45,8 +47,9 @@ TODO
 - Need to do change Detection now, whenever a field gets changed, change that field to the corresponding 
 - fields as well.
 
+- Make Overrides, Announcements, LiveEvents as Upsert Functions - Announcements done
 
-- Add Logic to create a new announcement chunk document if it nears 15MB
+- Add Logic to create a new announcement chunk document if it nears 15MB - Cron Job
 
 - Create Batch-Admins Logic
 - Find person whereabouts

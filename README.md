@@ -70,7 +70,7 @@ Efficiently serve personalized, real-time event data (live and recurring) to use
 
 ---
 
-### 📤 **Scalability & Concurrency**
+### **Scalability & Concurrency**
 
 * Writes decoupled via **Redis-backed queues** (producer-consumer pattern)
 * Optional: Add **priority queue** to prioritize writes over reads during spikes
@@ -87,7 +87,7 @@ Efficiently serve personalized, real-time event data (live and recurring) to use
 
 ---
 
-### 📈 **Scalable To**
+### **Scalable To**
 
 * 500K+ users
 * 1000+ batches

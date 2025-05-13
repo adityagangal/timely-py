@@ -12,8 +12,6 @@ The other repo is present at [timely-node-mongo](https://github.com/RishiTiku/ti
 
 The most challenging part of this project has been the schema design. Having conquered it, the rest of the development was easy. 
 
-Here’s a clear and concise summary of your system design decisions, perfect for your project’s README:
-
 ---
 
 ## System Design Summary

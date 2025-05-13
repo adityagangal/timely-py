@@ -28,9 +28,7 @@ Efficiently serve personalized, real-time event data (live and recurring) to use
 
 * **Read Optimization**
 
-  * Precompute and cache event data in **Redis**, structured as:
-
-    date → batch_id → [events]
+  * Precompute and cache event data in **Redis**, structured as: date → [(batch_id, event)], batch_id → [(date, event)]
   * Enables fast lookup of all relevant events for any batch on a given date.
 
 * **Write-Heavy Optimizations**
@@ -40,7 +38,7 @@ Efficiently serve personalized, real-time event data (live and recurring) to use
 
 * **Data Push to Clients**
 
-  * On changes to user batch memberships, app clients are notified to refresh batch list.
+  * On changes to user batch memberships, user-batch mapping in cache is updated.
   * Ensures **zero DB hits** for user-batch mapping reads.
 
 ---
@@ -68,7 +66,7 @@ Efficiently serve personalized, real-time event data (live and recurring) to use
 
 * Each read path (user → batches → events): **\~15-20ms**
 * Can handle **500+ concurrent user reads/sec**
-* > 99% of read requests **served from Redis**
+> 99% of read requests **served from Redis**
 
 ---
 

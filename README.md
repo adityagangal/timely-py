@@ -16,6 +16,8 @@ The most challenging part of this project has been the schema design. Having con
 
 ## System Design Summary
 
+---
+
 ### **Objective**
 
 Efficiently serve personalized, real-time event data (live and recurring) to users with **minimal latency**, **low memory usage**, and **scalable architecture**.

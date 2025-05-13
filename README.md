@@ -1,5 +1,6 @@
 # timely-py
 
+# Introduction
 This is the Python implementation of my timely-node backend. This porting is being done to ensure code can be easily maintained and understood by future maintainers. Partly to speed-up development because Python Supremacy!
 
 This version uses Python | Fast-API | Beanie - Pydantic - Motor | MongoDB. 

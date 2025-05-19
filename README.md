@@ -15,9 +15,9 @@ The most challenging part of this project has been the schema design. Having con
 ---
 
 ## System Design Summary
+![SystemDesign drawio](https://github.com/user-attachments/assets/bd725e1f-6da2-4cd5-9ff3-e88d2199b2dd)
 
 ---
-
 ### **Objective**
 
 Efficiently serve personalized, real-time event data (live and recurring) to users with **minimal latency**, **low memory usage**, and **scalable architecture**.

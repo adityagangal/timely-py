@@ -7,19 +7,28 @@ from database.models import CreatedByEntry
 from typing import Dict, List
 from bson import ObjectId
 from pymongo import UpdateOne
-from database.models import User, Event
+from database.models import User, Event, RecurringEvent
 from database.config import get_connection
+from database.services.live_events_from_events import aggregate_live_events_for_day
 from database.services.test import push_into_latest_hello, create_new_announcement_with_model
 from database.services.announcement import create_announcement
 from utils.logging_config import setup_logging
+
 async def main():
     setup_logging()
     await connect_db()
     # print(*await find_user_events(ObjectId("67fbe790993d093f6b3a9480")), sep = "\n")
+    # await explain_user_events(ObjectId("67fbe790993d093f6b3a9480"))
     # await create_new_announcement_with_model(ObjectId("67fbe9baa73a6a81e5e65b0f"))
     # await push_into_latest_hello(ObjectId("67fbe9baa73a6a81e5e65b0f"))
     # await create_announcement("This is an actual Announcement!!!", ObjectId("67fbe9baa73a6a81e5e65b0f"), CreatedByEntry(_id=ObjectId("67fbe790993d093f6b3a9480"), name="Rishi Tiku"), datetime.now(timezone.utc))
+    await aggregate_live_events_for_day(datetime(2025, 5, 21))
+    # d = datetime(2025, 5, 20)
+    # print(d.isoweekday())
 
+    # event_entries = await Event.find({"start_date": d}).to_list(None)
+    # recurring_entries = await RecurringEvent.get_motor_collection().find({"day_of_week": 3}).to_list(None)
+    # print(event_entries, recurring_entries)
     await disconnect_db()
 
 
@@ -29,7 +38,7 @@ if __name__ == "__main__":
 
 
 """ 
-TODO
+TODO - Done List
 - Join Events to Batches - Done!!!!
 - Query Users to Events - Done!!!! - 1ms max per query - OMG fast
 - Join Users to Events - Done!!!
@@ -39,6 +48,7 @@ TODO
 - to refactor all functions - Done!! Need to test them out once
 - Reorganize Models Folder - Done!! Need to change Dummy Data to suit fields
 - Create Announcements - Done!! 
+- Make Overrides, Announcements, LiveEvents as Upsert Functions -  done
 
 TODO 
 - Bulk Operations functions need to be cleaned, and new functions to be tested- TODO
@@ -47,8 +57,6 @@ TODO
 - Need to do change Detection now, whenever a field gets changed, change that field to the corresponding 
 - fields as well.
 
-- Make Overrides, Announcements, LiveEvents as Upsert Functions - Announcements done
-
 - Add Logic to create a new announcement chunk document if it nears 15MB - Cron Job
 
 - Create Batch-Admins Logic
@@ -56,7 +64,13 @@ TODO
 - Find empty rooms
 - Change Updated at field
 
-- Change Dummy
+
+- Create Mapping for Recurring Event + Override to Live Event
+
+
+- Change Events
+- Create Factory functions for All to generate data
+
 
 """ 
 

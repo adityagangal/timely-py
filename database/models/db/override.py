@@ -9,6 +9,8 @@ from ..embedded import RescheduleEntry
 class Override(BaseDocument):
     date: datetime = Field(..., description="Source date of override")
     event_id: PydanticObjectId = Field(..., description="OId of Event")
-    override_history: Optional[List[RescheduleEntry]] = Field(default=[], description="History of Overrides")
+    current_entry: RescheduleEntry = Field(..., description="Most recent Override Info")
     status: EventStatusEnum = Field(default=EventStatusEnum.rescheduled, description="Status of Live Event")
+    override_history: Optional[List[RescheduleEntry]] = Field(default=[], description="History of Overrides")
+
 

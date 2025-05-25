@@ -99,11 +99,13 @@ Efficiently serve personalized, real-time event data (live and recurring) to use
 ## Intermediate mini victories
 ### Love making my app faster for best UX
 ![image](https://github.com/user-attachments/assets/26dabfb2-f181-4b63-a6d9-635475d4fab6)
-#### After populating DB with 10000 Users, 500 batches and 10000 Events
+#### After populating DB with 10K Users, 200 batches and 10K Events
 ![image](https://github.com/user-attachments/assets/9b7ef5bf-2f70-42bb-806b-cf8c8cf6ebdd)
+#### 100K Students, 50K Faculties, 2K Batches, 100K Events, Duplication Ratios :- Batches: Events = 1: ~100, Users: Batches = 1: ~7
+These ratios signify data duplication due to denormalization, Event documents are the heavy ones.
+![image](https://github.com/user-attachments/assets/92c5df90-1ed7-4b00-b80d-a43a2f4ed2ee)
 
-
-0-1 ms per query... I'd love to keep it that way!
+No caching yet. Just Denormalization along with indexing. 0-2 ms per query is peak UX. Instant reads.
 
 ### The Mongo Schema Design
 Schema design for this application has been a crucial part of its speed and ultimately its scalablity. It took 3 weeks and 4 iterations to make a Mongo friendly denormalised schema.

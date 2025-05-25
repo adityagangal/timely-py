@@ -13,6 +13,7 @@ from database.services.live_events_from_events import aggregate_live_events_for_
 from database.services.test import push_into_latest_hello, create_new_announcement_with_model
 from database.services.announcement import create_announcement
 from utils.logging_config import setup_logging
+from database.dummy.bulk_inserts2 import bulk_inserts
 
 async def main():
     setup_logging()
@@ -22,7 +23,8 @@ async def main():
     # await create_new_announcement_with_model(ObjectId("67fbe9baa73a6a81e5e65b0f"))
     # await push_into_latest_hello(ObjectId("67fbe9baa73a6a81e5e65b0f"))
     # await create_announcement("This is an actual Announcement!!!", ObjectId("67fbe9baa73a6a81e5e65b0f"), CreatedByEntry(_id=ObjectId("67fbe790993d093f6b3a9480"), name="Rishi Tiku"), datetime.now(timezone.utc))
-    await aggregate_live_events_for_day(datetime(2025, 5, 21))
+    # await aggregate_live_events_for_day(datetime(2025, 5, 21)) # Not working RN, because date is broken in old version.
+    await bulk_inserts()
     # d = datetime(2025, 5, 20)
     # print(d.isoweekday())
 

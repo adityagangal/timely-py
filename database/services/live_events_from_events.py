@@ -14,7 +14,7 @@ from database.models import Event, RecurringEvent, LiveEventEntry, LiveEvent, Ov
 
 async def aggregate_live_events_for_day(date: datetime):
     weekday = date.isoweekday() # 1-7 (Monday-Sunday)
-    date_only = date
+    date_only = date.date
 
     # --- Pipeline to get all valid Events & RecurringEvents with optional override ---
     events_pipeline = [

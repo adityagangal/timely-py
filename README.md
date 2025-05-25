@@ -99,6 +99,9 @@ Efficiently serve personalized, real-time event data (live and recurring) to use
 ## Intermediate mini victories
 ### Love making my app faster for best UX
 ![image](https://github.com/user-attachments/assets/26dabfb2-f181-4b63-a6d9-635475d4fab6)
+#### After populating DB with 10000 Users, 500 batches and 10000 Events
+![image](https://github.com/user-attachments/assets/9b7ef5bf-2f70-42bb-806b-cf8c8cf6ebdd)
+
 
 0-1 ms per query... I'd love to keep it that way!
 

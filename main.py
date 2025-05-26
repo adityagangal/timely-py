@@ -14,23 +14,48 @@ from database.services.test import push_into_latest_hello, create_new_announceme
 from database.services.announcement import create_announcement
 from utils.logging_config import setup_logging
 from database.dummy.bulk_inserts2 import bulk_inserts
+from database.dummy.redis_tests import get_all_events_for_user, get_events_for_user_fast
+import time
 
 async def main():
     setup_logging()
     await connect_db()
-    # print(*await find_user_events(ObjectId("67fbe790993d093f6b3a9480")), sep = "\n")
-    # await explain_user_events(ObjectId("67fbe790993d093f6b3a9480"))
+    # print(*await find_user_events(ObjectId('6833741b5ca5db3e8e2bad95')), sep = "\n")
+    # print()
+    # print(*await find_user_events(ObjectId('683374355ca5db3e8e2d3436')), sep = "\n")
+    # await explain_user_events(ObjectId('6833741b5ca5db3e8e2bad95'))
+    # await explain_user_events(ObjectId('683374355ca5db3e8e2d3436'))
+    # print(await User.aggregate([
+    #         { "$match": { "_id": ObjectId("6833606987b738a31529a9d7") } },
+    #         { "$unwind": "$in_batches" },
+    #         {
+    #             "$lookup": {
+    #             "from": "Batches",
+    #             "localField": "in_batches.id",
+    #             "foreignField": "_id",
+    #             "as": "matched"
+    #             }
+    #         }
+    #     ]).to_list(None))
     # await create_new_announcement_with_model(ObjectId("67fbe9baa73a6a81e5e65b0f"))
     # await push_into_latest_hello(ObjectId("67fbe9baa73a6a81e5e65b0f"))
     # await create_announcement("This is an actual Announcement!!!", ObjectId("67fbe9baa73a6a81e5e65b0f"), CreatedByEntry(_id=ObjectId("67fbe790993d093f6b3a9480"), name="Rishi Tiku"), datetime.now(timezone.utc))
     # await aggregate_live_events_for_day(datetime(2025, 5, 21)) # Not working RN, because date is broken in old version.
-    await bulk_inserts()
+    # await bulk_inserts()
+
     # d = datetime(2025, 5, 20)
     # print(d.isoweekday())
 
     # event_entries = await Event.find({"start_date": d}).to_list(None)
     # recurring_entries = await RecurringEvent.get_motor_collection().find({"day_of_week": 3}).to_list(None)
     # print(event_entries, recurring_entries)
+    # start_time = time.perf_counter()
+    # events = get_all_events_for_user("6834ac6604c10774fb7c68e5")
+    await get_events_for_user_fast("6834b365de3f30be5a114c03")
+    # print(events)
+    # end_time = time.perf_counter()
+    # elapsed = end_time - start_time
+    # print(f"Retrieved {len(events)} events in {elapsed:.4f} seconds")
     await disconnect_db()
 
 

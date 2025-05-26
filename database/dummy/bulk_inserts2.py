@@ -13,18 +13,23 @@ from database.models import (
     UserIdNameTags, User
 )
 from beanie import PydanticObjectId
+import redis
+import json
 
+r = redis.Redis(host="localhost", port=6379, decode_responses=True)
+redis_pipe = r.pipeline()
 faker = Faker()
 
 # Constants
-TOTAL_STUDENTS = 9500
-TOTAL_FACULTY = 500
+TOTAL_STUDENTS = 10000
+TOTAL_FACULTY = 5000
 TOTAL_EVENTS = 10000
 BATCH_COUNT = 200
-
 STUDENT_CHUNK = 500
 FACULTY_CHUNK = 100
 EVENT_CHUNK = 500
+CHUNK_SIZE = 2000
+
 
 def generate_code(prefix: str):
     return f"{prefix.upper()}-{uuid.uuid4().hex}"
@@ -33,6 +38,7 @@ def generate_code(prefix: str):
 def generate_students_bulk(count: int, batch_ids: List[BatchIdNameCode]) -> List[Student]:
     return [
         Student(
+            id=ObjectId(),
             name=faker.name(),
             email=faker.unique.email(),
             password="12345678",
@@ -61,8 +67,6 @@ def generate_faculty_bulk(count: int, batch_ids: List[BatchIdNameCode]) -> List[
     ]
 
 
-
-
 def random_time_range():
     start_hour = random.randint(8, 16)
     end_hour = random.randint(start_hour + 1, min(start_hour + 3, 20))
@@ -71,6 +75,14 @@ def random_time_range():
 
 def format_time(t: time) -> str:
     return t.strftime("%H:%M")
+
+
+async def insert_in_chunks(model, data, chunk_size=CHUNK_SIZE):
+    for i in range(0, len(data), chunk_size):
+        print(f"Inserting {str(model)} {i+1} to {i+chunk_size}")
+        chunk = data[i:i + chunk_size]
+        await model.insert_many(chunk)
+
 
 async def bulk_inserts():
     print("Creating batches...")
@@ -92,38 +104,43 @@ async def bulk_inserts():
     all_students = []
     for i in range(0, TOTAL_STUDENTS, STUDENT_CHUNK):
         print(f"Inserting students {i+1} to {i+STUDENT_CHUNK}")
-        students = generate_students_bulk(STUDENT_CHUNK, [])  # Assign batches below
+        students = generate_students_bulk(STUDENT_CHUNK, [])
         all_students.extend(students)
 
     print("Creating faculty in bulk...")
     all_faculty = []
     for i in range(0, TOTAL_FACULTY, FACULTY_CHUNK):
         print(f"Inserting faculty {i+1} to {i+FACULTY_CHUNK}")
-        faculty = generate_faculty_bulk(FACULTY_CHUNK, [])  # Assign batches below
+        faculty = generate_faculty_bulk(FACULTY_CHUNK, [])
         all_faculty.extend(faculty)
 
     print("Assigning batches to users and embedding participants...")
-    def assign_batches_embed(users: list[User], min_batches=1, max_batches=3):
+
+    def assign_batches_embed(users: list[User], min_batches=1, max_batches=7):
         for user in users:
             assigned_batches = random.sample(batch_refs, k=random.randint(min_batches, max_batches))
             user.in_batches = assigned_batches
 
             user_embed = UserIdNameTags(_id=user.id, name=user.name, tags=[])
+
+            batch_ids = [str(b.id) for b in assigned_batches]
+            redis_pipe.sadd(f"user:{str(user.id)}:batches", *batch_ids)
+
             for b in assigned_batches:
                 batch_map[b.id].participants.append(user_embed)
 
-    assign_batches_embed(all_students, min_batches=1, max_batches=2)
-    assign_batches_embed(all_faculty, min_batches=1, max_batches=3)
+    assign_batches_embed(all_students, min_batches=1, max_batches=10)
+    assign_batches_embed(all_faculty, min_batches=1, max_batches=10)
 
     print("Fetching subjects and rooms...")
     subjects = await Subject.find_all().to_list()
     rooms = await Room.find_all().to_list()
 
-    print("Creating recurring events in memory and embedding into batches and faculty...")
+    print("Creating recurring events and embedding into batches and faculty...")
     all_events = []
     faculty_map = {f.id: f for f in all_faculty}
 
-    for _ in range(TOTAL_EVENTS):
+    for event_idx in range(TOTAL_EVENTS):
         selected_batches = random.sample(batches, k=random.randint(1, min(3, len(batches))))
         selected_faculties = random.sample(all_faculty, k=random.randint(1, min(2, len(all_faculty))))
         selected_subjects = random.sample(subjects, k=random.randint(0, min(2, len(subjects)))) if subjects else []
@@ -165,16 +182,37 @@ async def bulk_inserts():
             rooms=event.rooms
         )
 
+        event_doc = {
+            "id": str(event.id),
+            "start_time": start_str,
+            "end_time": end_str,
+            "day_of_week": event.day_of_week,
+            "online_links": event.online_links,
+            "description": event.description,
+            "faculties": [str(f.id) for f in faculty_refs],
+            "subjects": [str(s.id) for s in subject_refs],
+            "rooms": [str(r.id) for r in room_refs]
+        }
+        event_json = json.dumps(event_doc)
+
         for b in selected_batches:
             b.events.append(embedded_event)
+            redis_pipe.rpush(f"batch:{str(b.id)}:events", event_json)
 
         for f in selected_faculties:
             faculty_map[f.id].faculty_events.append(embedded_event)
 
     print("Bulk inserting everything...")
-    await Batch.insert_many(batches)
-    await Student.insert_many(all_students)
-    await Faculty.insert_many(all_faculty)
-    await RecurringEvent.insert_many(all_events)
+    await insert_in_chunks(Batch, batches)
+    await insert_in_chunks(Student, all_students)
+    await insert_in_chunks(Faculty, all_faculty)
+    await insert_in_chunks(RecurringEvent, all_events)
+
+    print("Executing Redis pipeline...")
+    redis_pipe.execute()
 
     print("All done!")
+
+if __name__ == "__main__":
+    asyncio.run(connect_db())
+    asyncio.run(bulk_inserts())

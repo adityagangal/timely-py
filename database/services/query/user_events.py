@@ -69,8 +69,47 @@ def get_pipeline_using_let_experimental(user_id: ObjectId):
     ]
     return pipeline
 
-
 def get_pipeline(user_id: ObjectId):
+    pipeline = [
+        {"$match": {"_id": user_id}},
+        {
+            "$facet": {
+                "from_batches": [
+                    {"$project": {"in_batches": 1}},
+                    {"$unwind": "$in_batches"},
+                    {
+                        "$lookup": {
+                            "from": "Batches",
+                            "localField": "in_batches._id",  # FIXED: correct path to ID
+                            "foreignField": "_id",
+                            "as": "batch_docs"
+                        }
+                    },
+                    {"$unwind": "$batch_docs"},
+                    {"$unwind": "$batch_docs.events"},
+                    {"$replaceRoot": {"newRoot": "$batch_docs.events"}}
+                ],
+                "from_faculty": [
+                    {"$project": {"faculty_events": 1}},
+                    {"$unwind": "$faculty_events"},
+                    {"$replaceRoot": {"newRoot": "$faculty_events"}}
+                ]
+            }
+        },
+        {
+            "$project": {
+                "combined": {"$concatArrays": ["$from_batches", "$from_faculty"]}
+            }
+        },
+        {"$unwind": "$combined"},
+        {"$replaceRoot": {"newRoot": "$combined"}},
+        {"$sort": {"day_of_week": 1, "start_time": 1}}
+    ]
+    return pipeline
+
+
+
+def get_pipeline1(user_id: ObjectId):
     pipeline = [
         {"$match": {"_id": user_id}},
         {
@@ -108,11 +147,11 @@ def get_pipeline(user_id: ObjectId):
 
 
 async def find_user_events(user_id: ObjectId):
-    pipeline = get_pipeline_using_let_experimental(user_id)
+    pipeline = get_pipeline(user_id)
     return await User.aggregate(pipeline).to_list()
 
 async def explain_user_events(user_id: PydanticObjectId) -> list[dict]:
-    pipeline = get_pipeline_using_let_experimental(user_id)
+    pipeline = get_pipeline(user_id)
     coll = User.get_motor_collection()
     db = coll.database
     explain_cmd = {

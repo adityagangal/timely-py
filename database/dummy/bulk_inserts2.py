@@ -14,6 +14,7 @@ from database.models import (
 )
 from beanie import PydanticObjectId
 import redis
+from redis.commands.json.path import Path
 import json
 
 r = redis.Redis(host="localhost", port=6379, decode_responses=True)
@@ -21,14 +22,14 @@ redis_pipe = r.pipeline()
 faker = Faker()
 
 # Constants
-TOTAL_STUDENTS = 10000
-TOTAL_FACULTY = 5000
-TOTAL_EVENTS = 10000
-BATCH_COUNT = 200
+TOTAL_STUDENTS = 100000
+TOTAL_FACULTY = 50000
+TOTAL_EVENTS = 100000
+BATCH_COUNT = 2000
 STUDENT_CHUNK = 500
 FACULTY_CHUNK = 100
 EVENT_CHUNK = 500
-CHUNK_SIZE = 2000
+CHUNK_SIZE = 200
 
 
 def generate_code(prefix: str):
@@ -124,7 +125,7 @@ async def bulk_inserts():
             user_embed = UserIdNameTags(_id=user.id, name=user.name, tags=[])
 
             batch_ids = [str(b.id) for b in assigned_batches]
-            redis_pipe.sadd(f"user:{str(user.id)}:batches", *batch_ids)
+            redis_pipe.json().set(f"user:{str(user.id)}", Path.root_path(), {"batch_ids": batch_ids})
 
             for b in assigned_batches:
                 batch_map[b.id].participants.append(user_embed)
@@ -193,11 +194,17 @@ async def bulk_inserts():
             "subjects": [str(s.id) for s in subject_refs],
             "rooms": [str(r.id) for r in room_refs]
         }
-        event_json = json.dumps(event_doc)
 
         for b in selected_batches:
             b.events.append(embedded_event)
-            redis_pipe.rpush(f"batch:{str(b.id)}:events", event_json)
+            batch_key = f"batch:{str(b.id)}:events"
+
+            # Ensure key exists with empty array first (outside pipeline)
+            if not r.exists(batch_key):
+                r.json().set(batch_key, Path.root_path(), [])
+
+            # Now safe to append in pipeline
+            redis_pipe.json().arrappend(batch_key, Path.root_path(), event_doc)
 
         for f in selected_faculties:
             faculty_map[f.id].faculty_events.append(embedded_event)

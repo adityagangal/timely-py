@@ -4,6 +4,7 @@ from beanie import Indexed
 from pydantic import Field
 from typing import List, Optional, Annotated
 from ..embedded import RecurringEventEmbedded, UserIdNameTags, LiveEventEmbedded
+from bson import ObjectId
 
 class Batch(BaseDocument):
     name: Optional[str] = Field(None, description="Name of the batch")
@@ -15,6 +16,9 @@ class Batch(BaseDocument):
 
     class Settings:
         name = "Batches"
+    class Config:
+        json_encoders = {ObjectId: str}
+        populate_by_name = True
 
 
 """

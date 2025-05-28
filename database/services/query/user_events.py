@@ -1,6 +1,7 @@
 from bson import ObjectId
-from database.models import User
+from database.models import User, Event
 from beanie import PydanticObjectId
+import time
 
 # def get_pipeline(user_id: ObjectId): # Original Pipeline - No faculty events
 #     pipeline = [
@@ -148,7 +149,10 @@ def get_pipeline1(user_id: ObjectId):
 
 async def find_user_events(user_id: ObjectId):
     pipeline = get_pipeline(user_id)
-    return await User.aggregate(pipeline).to_list()
+    events = await User.aggregate(pipeline).to_list()
+    events = [Event(**event) for event in events]
+    return events
+
 
 async def explain_user_events(user_id: PydanticObjectId) -> list[dict]:
     pipeline = get_pipeline(user_id)
@@ -165,7 +169,7 @@ async def explain_user_events(user_id: PydanticObjectId) -> list[dict]:
     stats = await db.command(explain_cmd)
     parsed = parse_explain_stats(stats)
     print_parsed_stats(parsed)
-    return parsed
+    return stats
 
 
 def parse_explain_stats(stats: dict) -> list[dict]:

@@ -3,6 +3,7 @@ from pydantic import Field
 from typing import List, Optional
 from ..embedded import SubjectIdName, FacultyIdNameCode, BatchIdNameCode, RoomIdCode
 from datetime import time
+from bson import ObjectId
 
 class Event(BaseDocument):
     start_time: str = Field(..., description="Start time in hh:mm")
@@ -16,6 +17,9 @@ class Event(BaseDocument):
     class Settings:
         name = "Events"
         is_root = True
+    class Config:
+        json_encoders = {ObjectId: str}
+        populate_by_name = True
 
 
 class RecurringEvent(Event):

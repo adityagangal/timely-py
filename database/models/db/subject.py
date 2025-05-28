@@ -3,6 +3,7 @@ from pydantic import Field
 from beanie import Indexed, Link
 from typing import List, Optional, TYPE_CHECKING
 from ..embedded import EventId
+from bson import ObjectId
 
 class Subject(BaseDocument):
     name: str = Field(..., description="Subject name")
@@ -11,3 +12,6 @@ class Subject(BaseDocument):
 
     class Settings:
         name = "Subjects"
+    class Config:
+        json_encoders = {ObjectId: str}
+        populate_by_name = True

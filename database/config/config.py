@@ -22,6 +22,8 @@ MONGO_URI = (
     f"{DB_NAME}?retryWrites=true&w=majority&appName={APP_NAME}"
 )
 
+MONGO_URI = "mongodb://localhost:27017"
+
 # MongoDB Client
 client = AsyncIOMotorClient(
     MONGO_URI

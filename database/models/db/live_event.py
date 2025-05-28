@@ -3,6 +3,7 @@ from typing import List, Optional
 from datetime import date as Date
 from pydantic import Field
 from ..embedded import LiveEventEntry
+from bson import ObjectId
     
 
 class LiveEvent(BaseDocument):
@@ -10,6 +11,9 @@ class LiveEvent(BaseDocument):
     live_events: Optional[List[LiveEventEntry]] = Field(default=[], description="Live Events for the day")
     class Settings:
         name = "LiveEvents"
+    class Config:
+        json_encoders = {ObjectId: str}
+        populate_by_name = True
 
 
 # Think of logic where the event must be chopped up into different events

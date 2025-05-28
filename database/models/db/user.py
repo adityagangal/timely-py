@@ -4,6 +4,7 @@ from beanie import Link, Indexed
 from pydantic import Field, EmailStr
 from typing import List, Annotated, Optional
 from ..embedded import RecurringEventEmbedded, BatchIdNameCode, RoomIdCode
+from bson import ObjectId
 
 class User(BaseDocument):
     name: str = Field(..., min_length=3, description="User's full name")
@@ -14,6 +15,9 @@ class User(BaseDocument):
     
     class Settings:
         name = "Users"
+    class Config:
+        json_encoders = {ObjectId: str}
+        populate_by_name = True
 
 class Faculty(User):
     code: Annotated[str, Indexed(name = "code_sparse", unique = True, sparse = True)]
